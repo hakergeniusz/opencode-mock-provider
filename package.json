@@ -1,0 +1,32 @@
+{
+  "name": "opencode-mock-provider",
+  "version": "0.1.0",
+  "description": "Zero-delay fake provider for OpenCode — isolates framework latency from network latency",
+  "type": "module",
+  "private": false,
+  "license": "MIT",
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "mock",
+    "provider",
+    "latency",
+    "testing"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "bun test/mock.test.ts && bun test/server.test.ts"
+  },
+  "dependencies": {
+    "@opencode/plugin": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "typescript": "latest"
+  }
+}
