@@ -1,7 +1,5 @@
 /**
- * Tests for the ported mock reply logic. These are the pi original's
- * reply/abort/config assertions rewritten against `src/mock.ts`; they need no
- * pi dependencies and no OpenCode host.
+ * Tests for the mock reply logic in `src/mock.ts`; they need no OpenCode host.
  *
  *   bun test/mock.test.ts
  */
@@ -89,24 +87,23 @@ check("zero usage shapes are all zero", () => {
 // --- config / abort ----------------------------------------------------------
 
 check("artificialDelayMs defaults to 0 and ignores bad values", () => {
-  delete process.env.PI_MOCK_DELAY_MS
-  delete process.env.MOCK_DELAY_MS
+  delete process.env.OPENCODE_MOCK_DELAY_MS
   assert.equal(artificialDelayMs(), 0)
-  process.env.PI_MOCK_DELAY_MS = "not-a-number"
+  process.env.OPENCODE_MOCK_DELAY_MS = "not-a-number"
   assert.equal(artificialDelayMs(), 0)
-  process.env.PI_MOCK_DELAY_MS = "-5"
+  process.env.OPENCODE_MOCK_DELAY_MS = "-5"
   assert.equal(artificialDelayMs(), 0)
-  process.env.PI_MOCK_DELAY_MS = "25"
+  process.env.OPENCODE_MOCK_DELAY_MS = "25"
   assert.equal(artificialDelayMs(), 25)
-  delete process.env.PI_MOCK_DELAY_MS
+  delete process.env.OPENCODE_MOCK_DELAY_MS
 })
 
 check("debugLog is a no-op unless enabled and never throws", () => {
-  delete process.env.PI_MOCK_DEBUG
+  delete process.env.OPENCODE_MOCK_DEBUG
   assert.doesNotThrow(() => debugLog("noop", { a: 1 }))
-  process.env.PI_MOCK_DEBUG = "1"
+  process.env.OPENCODE_MOCK_DEBUG = "1"
   assert.doesNotThrow(() => debugLog("enabled", { a: 1 }))
-  delete process.env.PI_MOCK_DEBUG
+  delete process.env.OPENCODE_MOCK_DEBUG
 })
 
 await sleep(1)

@@ -1,12 +1,12 @@
 /**
  * End-to-end checks for the local OpenAI-compatible endpoint. No OpenCode host
- * and no pi packages are needed. `bun test/server.test.ts`
+ * is needed. `bun test/server.test.ts`
  */
 import assert from "node:assert/strict"
 import type { AddressInfo } from "node:net"
 import { startMockServer } from "../src/server"
 
-delete process.env.PI_MOCK_DELAY_MS
+delete process.env.OPENCODE_MOCK_DELAY_MS
 
 const controller = new AbortController()
 const server = await startMockServer(controller.signal)

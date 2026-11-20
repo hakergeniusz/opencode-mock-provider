@@ -1,17 +1,17 @@
 /**
- * Framework-agnostic helpers ported from pi-mock-provider.
+ * Framework-agnostic helpers for the mock provider.
  *
- * Kept free of any `@opencode/plugin` (or pi) imports so the reply logic can be
- * exercised on its own — see `test/mock.test.ts`.
+ * Kept free of `@opencode/plugin` imports so the reply logic can be exercised
+ * on its own — see `test/mock.test.ts`.
  *
- * Environment (unchanged from the pi original):
- *   MOCK_DELAY_MS / PI_MOCK_DELAY_MS  artificial delay in ms (default 0)
- *   PI_MOCK_DEBUG=1                   trace logging to stderr
+ * Environment:
+ *   OPENCODE_MOCK_DELAY_MS  artificial delay in ms (default 0)
+ *   OPENCODE_MOCK_DEBUG=1   trace logging to stderr
  */
 
 /** Trace logging. Must never break the provider. */
 export function debugLog(event: string, data: Record<string, unknown> = {}): void {
-  if (process.env.PI_MOCK_DEBUG !== "1") return
+  if (process.env.OPENCODE_MOCK_DEBUG !== "1") return
   try {
     console.error("[opencode-mock] " + JSON.stringify({ event, ...data }))
   } catch {
@@ -21,7 +21,7 @@ export function debugLog(event: string, data: Record<string, unknown> = {}): voi
 
 /** Optional artificial delay, used to simulate a slow provider. */
 export function artificialDelayMs(): number {
-  const raw = Number(process.env.PI_MOCK_DELAY_MS ?? process.env.MOCK_DELAY_MS)
+  const raw = Number(process.env.OPENCODE_MOCK_DELAY_MS)
   return Number.isFinite(raw) && raw > 0 ? raw : 0
 }
 
@@ -44,7 +44,7 @@ export function sleep(ms: number, signal?: AbortSignal): Promise<void> {
   })
 }
 
-/** The pi-original zero-usage shape, preserved for parity/reference. */
+/** Zero-usage shape, preserved for parity/reference. */
 export function zeroUsage() {
   return {
     input: 0,

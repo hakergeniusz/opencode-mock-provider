@@ -1,19 +1,19 @@
 /**
  * opencode-mock-provider — a zero-delay fake provider for OpenCode V2.
  *
- * Port of `pi-mock-provider`. It registers a `mock` provider with two models
- * (`mock/instant`, `mock/echo`) through `ctx.provider.transform`, and answers
- * in-process with no external network: a tiny OpenAI-compatible HTTP endpoint
- * bound to 127.0.0.1 backs the provider, so any wall-clock time between prompt
- * and reply is framework overhead rather than network/model latency.
+ * Registers a `mock` provider with two models (`mock/instant`, `mock/echo`)
+ * through `ctx.provider.transform`, and answers in-process with no external
+ * network: a tiny OpenAI-compatible HTTP endpoint bound to 127.0.0.1 backs the
+ * provider, so any wall-clock time between prompt and reply is framework
+ * overhead rather than network/model latency.
  *
  * Models:
  *   mock/instant   replies "Mock reply." immediately
  *   mock/echo      echoes the last user message (truncated to 200 chars)
  *
  * Environment:
- *   PI_MOCK_DELAY_MS   optional artificial delay in ms per streamed token
- *   PI_MOCK_DEBUG=1    trace logging to stderr
+ *   OPENCODE_MOCK_DELAY_MS   optional artificial delay in ms per streamed token
+ *   OPENCODE_MOCK_DEBUG=1    trace logging to stderr
  */
 
 import { Model, Plugin, Provider } from "@opencode/plugin"
@@ -32,9 +32,9 @@ export default Plugin.define({
     const baseURL = `http://127.0.0.1:${port}/v1`
 
     // Provider + model registration. In OpenCode V2 a provider is metadata
-    // (Provider.Info: package + settings), not a function hook for the model
-    // call; a pi-style `streamSimple` cannot be injected here. We point the
-    // openai-compatible package at the in-process endpoint instead (README).
+    // (Provider.Info: package + settings), not a pluggable model-call hook.
+    // We point the openai-compatible package at the in-process endpoint
+    // instead (README).
     await ctx.provider.transform((editor) => {
       editor.add({
         info: {
@@ -55,9 +55,9 @@ export default Plugin.define({
       })
     })
 
-    // Framework-delay reporting. pi's agent_start/message_end pair maps to
-    // OpenCode's session execution events. The server plugin context has no UI
-    // notify channel, so the measurement is logged to stderr.
+    // Framework-delay reporting. Session execution start/end events are paired
+    // to measure framework delay. The server plugin context has no UI notify
+    // channel, so the measurement is logged to stderr.
     const startedAt = new Map<string, number>()
     const subscription = ctx.event.subscribe({
       types: ["session.execution.started", "session.execution.succeeded"],
